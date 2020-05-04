@@ -1,14 +1,52 @@
- list the active account name with this command:
- $gcloud auth list
- 
-  list the project ID with this command:
-  $gcloud config list project
+# Google Cloud Platform
+* Compute: houses a variety of machine types that support any type of workload. The different computing options let you decide how involved you want to be with operational details and infrastructure amongst other things.
+* Storage: data storage and database options for structured or unstructured, relational or non relational data.
+* Networking: services that balance application traffic and provision security rules amongst other things.
+* Stackdriver: a suite of cross-cloud logging, monitoring, trace, and other service reliability tools.
+* Tools: services for developers managing deployments and application build pipelines.
+* Big Data: services that allow you to process and analyze large datasets.
+* Artificial Intelligence: a suite of APIs that run specific artificial intelligence and machine learning tasks on the Google Cloud platform.
+
+## Roles and Permissions
+**Cloud Identity and Access Management (IAM)**
+
+|Role Name|Permissions|
+|---|---|
+|roles/viewer|Permissions for read-only actions that do not affect state, such as viewing (but not modifying) existing resources or data.|
+|roles/editor|All viewer permissions, plus permissions for actions that modify state, such as changing existing resources.able to create, modify, and delete GCP resources.  won't be able to add or delete members from GCP projects|
+|roles/owner|All editor permissions and permissions for the following actions:
+Manage roles and permissions for a project and all resources within the project.
+Set up billing for a project.|
+
+* lists the credentialed account(s) in your GCP project
+```
+gcloud auth list
+```
+---
+# Creating a Virtual Machine
+
+* list the project ID 
+```
+gcloud config list project
+```
+* Understanding Regions and Zones
+
+Certain Compute Engine resources live in regions or zones. A region is a specific geographical location where you can run your resources. Each region has one or more zones
+
+>  us-central1 region denotes a region in the Central United States that has zones us-central1-a, us-central1-b, us-central1-c, and us-central1-f.
+
+Resources that live in a zone are referred to as zonal resources. Virtual machine Instances and persistent disks live in a zone. To attach a persistent disk to a virtual machine instance, both resources must be in the same zone. Similarly, if you want to assign a static IP address to an instance, the instance must be in the same region as the static IP.
+
+* Create a new instance from the Cloud Console
+
+  * Name : gcelab
+  * Region : us-central1 (Iowa)
+  * Zone : us-central1-c
+  * Machine Type : 2 vCPUs
+  * Boot Disk : New 10 GB standard persistent disk , OS Image: Debian GNU/Linux 9 (stretch)
+  * Firewall : Allow HTTP traffic
   
-  
-  Resources that live in a zone are referred to as zonal resources. Virtual machine Instances and persistent disks live in a zone. To attach a persistent disk to a virtual machine instance, both resources must be in the same zone. Similarly, if you want to assign a static IP address to an instance, the instance must be in the same region as the static IP.
-  
-  
-  Install a NGINX web server
+* Install a NGINX web server
 Now you'll install NGINX web server, one of the most popular web servers in the world, to connect your virtual machine to something
 
 sudo su -
