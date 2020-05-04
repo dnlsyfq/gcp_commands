@@ -117,6 +117,65 @@ vi ./.bashrc
 > Press the ESC key and then :wq to exit the editor.
 
 
+---
 
+# Kubernetes Engine: Qwik Start
 
+1. list the active account name with this command
 
+```
+$ gcloud auth list
+```
+
+2. list the project ID 
+```
+$ gcloud config list project
+```
+
+3. Setting a default compute zone
+```
+$ gcloud config set compute/zone us-central1-a
+```
+
+4. Creating a Kubernetes Engine cluster
+```
+$ gcloud container clusters create [CLUSTER-NAME]
+```
+
+5. Get authentication credentials for the cluster
+After creating your cluster, you need to get authentication credentials to interact with the cluster.
+```
+$ gcloud container clusters get-credentials [CLUSTER-NAME]
+```
+
+6. Deploying an application to the cluster
+
+deploy a containerized application . 
+ 
+Kubernetes Engine uses Kubernetes objects to create and manage your cluster's resources. Kubernetes provides the Deployment object for deploying stateless applications like web servers. Service objects define rules and load balancing for accessing your application from the Internet.
+```
+# to create a new Deployment hello-server from the hello-app container image:
+
+$ kubectl create deployment hello-server --image=gcr.io/google-samples/hello-app:1.0
+
+# This Kubernetes command creates a Deployment object that represents hello-server. In this case, --image specifies a container image to deploy. The command pulls the example image from a Google Container Registry bucket. gcr.io/google-samples/hello-app:1.0 indicates the specific image version to pull. If a version is not specified, the latest version is used.
+```
+create a Kubernetes Service, which is a Kubernetes resource that lets you expose your application to external traffic
+```
+$ kubectl expose deployment hello-server --type=LoadBalancer --port 8080
+
+# --port specifies the port that the container exposes.
+# type="LoadBalancer" creates a Compute Engine load balancer for your container.
+```
+Inspect the hello-server Service
+```
+$ kubectl get service
+```
+
+From this command's output, copy the Service's external IP address from the EXTERNAL IP column.
+> http://[EXTERNAL-IP]:8080
+
+7. to delete the cluster
+```
+$ gcloud container clusters delete [CLUSTER-NAME]
+```
