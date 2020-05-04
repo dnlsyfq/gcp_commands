@@ -14,9 +14,7 @@
 |---|---|
 |roles/viewer|Permissions for read-only actions that do not affect state, such as viewing (but not modifying) existing resources or data.|
 |roles/editor|All viewer permissions, plus permissions for actions that modify state, such as changing existing resources.able to create, modify, and delete GCP resources.  won't be able to add or delete members from GCP projects|
-|roles/owner|All editor permissions and permissions for the following actions:
-Manage roles and permissions for a project and all resources within the project.
-Set up billing for a project.|
+|roles/owner|All editor permissions and permissions for the following actions: * Manage roles and permissions for a project and all resources within the project.* Set up billing for a project.|
 
 * lists the credentialed account(s) in your GCP project
 ```
@@ -47,51 +45,56 @@ Resources that live in a zone are referred to as zonal resources. Virtual machin
   * Firewall : Allow HTTP traffic
   
 * Install a NGINX web server
-Now you'll install NGINX web server, one of the most popular web servers in the world, to connect your virtual machine to something
-
+install NGINX web server, to connect your virtual machine to something
+```
 sudo su -
 apt-get update
 apt-get install nginx -y
 ps auwx | grep nginx
-
-
+```
+* Create a new instance with gcloud
+```
 gcloud compute instances create gcelab2 --machine-type n1-standard-2 --zone us-central1-c
+```
 
-
+```
+ # to see all the defaults.
 gcloud compute instances create --help
+
+# SSH into your instanc
 gcloud compute ssh gcelab2 --zone [YOUR_ZONE]
 exit
-
+```
 ---
 # Cloud Shell & gcloud
 
-Default regions and zones are set by using the following values:
-
+* Default regions and zones are set by using the following values:
+```
 google-compute-default-zone google-compute-default-region
+```
 
-To see what your default region and zone settings are, run the following gcloud command, replacing <your_project_id> which you can see on the Home page in the Console or look in the Qwiklabs tab where you started this lab, with your Project ID:
-
+* To see what your default region and zone settings
+```
 gcloud compute project-info describe --project <your_project_ID>
+```
 
 > If the google-compute-default-region and google-compute-default-zone keys and values are missing from the response, that means no default zone or region is set.
 
+* Initializing Cloud SDK
 
-Make a couple of environment variables:
+The gcloud CLI is a part of the Google Cloud SDK. You need to download and install the SDK on your own system and initialize it (by running gcloud init) before you can use the gcloud command-line tool.
 
+* Setting environment variables
+
+```
 export PROJECT_ID=<your_project_ID>
-
-Set your ZONE environment variable (use the value for zone from the earlier command):
-
 export ZONE=<your_zone>
 
 echo $PROJECT_ID
 echo $ZONE
+```
+* Create a virtual machine with gcloud
 
-
-$ gcloud compute 
-* which enables you to easily manage your Google Compute Engine resources in a friendlier format than using the Compute Engine API.
-$ instances create 
-* creates a new instance.
 ```
 gcloud compute instances create gcelab2 --machine-type n1-standard-2 --zone $ZONE
 ```
@@ -101,54 +104,46 @@ You're using the --zone flag to specify that it gets created in the zone you def
 
 If you omit the --zone flag, gcloud can infer your desired zone based on your default properties. Other required instance settings, like machine type and image, if not specified in the create command, are set to default values.
 
-Run the following command in Cloud Shell:
-
+gloud help
+```
 gcloud -h
-
-More verbose help can be obtained by appending --help flag, or executing gcloud help command. Run the following in Cloud Shell:
-
 gcloud config --help
+gcloud help config
+```
 
+* View the list of configurations in your environment:
+```
+gcloud config list
+```
+* To check how other properties are set, see all properties by calling:
+```
+gcloud config list --all
+```
 
-View the list of configurations in your environment:
+* List your components:
+```
+gcloud components list
+```
 
-$ gcloud config list
+* gcloud interactive has auto prompting for commands and flags, and displays inline help snippets in the lower section as the command is typed.When using the interactive mode, click on the Tab key to complete file path and resource arguments. If a dropdown menu appears, use the Tab key to move through the list, and the Space bar to select your choice.
 
-To check how other properties are set, see all properties by calling:
+```
+gcloud components install beta
 
-$ gcloud config list --all
-
-
-List your components:
-
-$ gcloud components list
-
-
-gcloud interactive has auto prompting for commands and flags, and displays inline help snippets in the lower section as the command is typed.
-
-Static information, like command and sub-command names, and flag names and enumerated flag values, are auto-completed using dropdown menus.
-
-Install the beta components:
-
-$ gcloud components install beta
-
-Enter the gcloud interactive mode:
-
-$ gcloud beta interactive
-
-
-When using the interactive mode, click on the Tab key to complete file path and resource arguments. If a dropdown menu appears, use the Tab key to move through the list, and the Space bar to select your choice.
-
-Try it out! Start typing the following command, using auto-complete to finish the command:
-
+# Enter the gcloud interactive mode:
+gcloud beta interactive
+```
+* describe instance 
+```
 gcloud compute instances describe <your_vm>
+```
 
-SSH into your vm instance
-gcloud compute makes connecting to your instances easy. The gcloud compute ssh command provides a wrapper around SSH, which takes care of authentication and the mapping of instance name to IP address.
+* SSH into your vm instance
 
-Use gcloud compute ssh to SSH into your vm:
-
+* to SSH into your vm
+```
 gcloud compute ssh gcelab2 --zone $ZONE
+```
 ---
 
 vi ./.bashrc 
