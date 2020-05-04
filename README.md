@@ -63,3 +63,60 @@ You're using the --zone flag to specify that it gets created in the zone you def
 
 If you omit the --zone flag, gcloud can infer your desired zone based on your default properties. Other required instance settings, like machine type and image, if not specified in the create command, are set to default values.
 
+Run the following command in Cloud Shell:
+
+gcloud -h
+
+More verbose help can be obtained by appending --help flag, or executing gcloud help command. Run the following in Cloud Shell:
+
+gcloud config --help
+
+
+View the list of configurations in your environment:
+
+$ gcloud config list
+
+To check how other properties are set, see all properties by calling:
+
+$ gcloud config list --all
+
+
+List your components:
+
+$ gcloud components list
+
+
+gcloud interactive has auto prompting for commands and flags, and displays inline help snippets in the lower section as the command is typed.
+
+Static information, like command and sub-command names, and flag names and enumerated flag values, are auto-completed using dropdown menus.
+
+Install the beta components:
+
+$ gcloud components install beta
+
+Enter the gcloud interactive mode:
+
+$ gcloud beta interactive
+
+
+When using the interactive mode, click on the Tab key to complete file path and resource arguments. If a dropdown menu appears, use the Tab key to move through the list, and the Space bar to select your choice.
+
+Try it out! Start typing the following command, using auto-complete to finish the command:
+
+gcloud compute instances describe <your_vm>
+
+SSH into your vm instance
+gcloud compute makes connecting to your instances easy. The gcloud compute ssh command provides a wrapper around SSH, which takes care of authentication and the mapping of instance name to IP address.
+
+Use gcloud compute ssh to SSH into your vm:
+
+gcloud compute ssh gcelab2 --zone $ZONE
+---
+
+vi ./.bashrc 
+> Press the ESC key and then :wq to exit the editor.
+
+
+
+
+
