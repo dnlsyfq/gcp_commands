@@ -64,3 +64,112 @@ CREATE TABLE entries (guestName VARCHAR(255), content VARCHAR(255),
     INSERT INTO entries (guestName, content) values ("first guest", "I got here!");
 INSERT INTO entries (guestName, content) values ("second guest", "Me too!");
 ```
+
+---
+
+## Loading Data into Google Cloud SQL
+
+
+*   list the active account
+```
+gcloud auth list
+```
+*   list the project ID
+```
+gcloud config list project
+```
+
+* Clone the Data Science on GCP Repository
+```
+git clone \
+   https://github.com/GoogleCloudPlatform/data-science-on-gcp/
+   
+cd data-science-on-gcp/03_sqlstudio
+
+# Create environment variables that will be used later in the lab for your project ID and the storage bucket that will contain your data
+
+export PROJECT_ID=$(gcloud info --format='value(config.project)')
+export BUCKET=${PROJECT_ID}-ml
+```
+## Create a Cloud SQL instance
+
+*   to create a Cloud SQL instance
+```
+gcloud sql instances create flights \
+    --tier=db-n1-standard-1 --activation-policy=ALWAYS
+```
+*   Set a root password for the Cloud SQL instance
+```
+gcloud sql users set-password root --host % --instance flights \
+ --password Passw0rd
+```
+
+*   create an environment variable with the IP address of the Cloud Shell
+```
+export ADDRESS=$(wget -qO - http://ipecho.net/plain)/32
+```
+
+*   Whitelist the Cloud Shell instance for management access to your SQL instance
+```
+gcloud sql instances patch flights --authorized-networks $ADDRESS
+```
+
+*   Get the IP address of your Cloud SQL instance
+```
+MYSQLIP=$(gcloud sql instances describe \
+flights --format="value(ipAddresses.ipAddress)")
+```
+
+*   Check the variable MYSQLIP:
+```
+echo $MYSQLIP
+```
+
+* create table from sql file 
+```
+mysql --host=$MYSQLIP --user=root \
+      --password --verbose < create_table.sql
+```
+
+* connect to mysql
+```
+mysql --host=$MYSQLIP --user=root  --password
+```
+
+##  add csv data to sql instance 
+Ingesting Data into the Cloud using Google App Engine lab. For this lab, they have been provided. You'll only be importing two months of data,
+```
+counter=0
+for FILE in 201501.csv 201502.csv; do
+   gsutil cp gs://$BUCKET/flights/raw/$FILE \
+             flights.csv-${counter}
+   counter=$((counter+1))
+done
+```
+
+* Import the CSV file data into Cloud SQL using mysql
+```
+mysqlimport --local --host=$MYSQLIP --user=root --password \
+--ignore-lines=1 --fields-terminated-by=',' bts flights.csv-*
+```
+*   Connect to the mysql interactive console
+```
+mysql --host=$MYSQLIP --user=root  --password
+```
+
+## Build the initial data model
+```
+use bts;
+select DISTINCT(FL_DATE) from flights;
+select DISTINCT(CARRIER) from flights;
+SET @ARR_DELAY_THRESH = 15;
+SET @DEP_DELAY_THRESH = 10;
+# Correct - true negative
+select count(dest) from flights where arr_delay < @ARR_DELAY_THRESH and dep_delay < @DEP_DELAY_THRESH;
+# False negative
+select count(dest) from flights where arr_delay >= @ARR_DELAY_THRESH and dep_delay < @DEP_DELAY_THRESH;
+# False positive
+select count(dest) from flights where arr_delay < @ARR_DELAY_THRESH and dep_delay >= @DEP_DELAY_THRESH;
+# True positive
+select count(dest) from flights where arr_delay >= @ARR_DELAY_THRESH and dep_delay >= @DEP_DELAY_THRESH;
+```
