@@ -315,5 +315,143 @@ production:
   database: postgres-database
   host: /cloudsql/[YOUR_INSTANCE_CONNECTION_NAME]
 ```
+## Generate a model
 
+* The new model contains a list of cat names and ages. You can generate a new Rails ActiveRecord model 
+```
+bundle exec rails generate model Cat name:string age:decimal
+
+# model named Cat, a database table named cats, and a migration file with a similar name to db/migrate/20170302062657_create_cats.rb
+```
+
+*   Update the production Cloud SQL for PostgreSQL instance database postgres_instance 
+```
+RAILS_ENV=production bundle exec rails db:create
+RAILS_ENV=production bundle exec rails db:migrate
+```
+## Add entries
+add a few cats using the Rails console to try out the new Cat model
+```
+#  start the Rails console
+RAILS_ENV=production bundle exec rails console
+
+# use the following Ruby code to add two cat friends
+Cat.create name: "Mr. Whiskers", age: 4
+Cat.create name: "Ms. Paws", age: 2
+exit
+```
+## List the different cats
+add a page to display a list of cats to the generated Rails application
+
+```
+# Generate scaffolding for a new page with the rails generate command.
+# The following command creates a new Rails controller named CatFriendsController with an index action
+
+bundle exec rails generate controller CatFriends index
+
+# generates new directories and files by default for the new CatFriendsController controller and index action
+```
+
+* Set the index controller action as the root action for Rails, and whenever a user visits the Rails app, they see the list of cats.
+Open the file config/routes.rb
+```
+# Modify this file by adding root cat_friends#index
+
+Rails.application.routes.draw do
+  get 'cat_friends/index'
+  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
+  root 'cat_friends#index'
+end
+```
+
+## Display database entries
+
+* Modify the Rails app to display entries in the database.
+```
+# Open the file app/controllers/cat_friends_controller.rb and set an instance variable @cats that contains all cat entries. 
+
+class CatFriendsController < ApplicationController
+  def index
+    @cats = Cat.all
+  end
+end
+
+```
+```
+# Next, open the file app/views/cat_friends/index.html.erb, and add Ruby code to display each cat entry in @cats.
+
+<h1>A list of my Cats</h1>
+
+<% @cats.each do |cat| %>
+<%=cat.name%> is <%=cat.age%> years old!<br />
+<% end %>
+```
+
+> Before you can test the Rails app, you need to define a secret key for the production environment in Cloud Shell. A secret key is used to protect user session data.
+
+* Generate a secret key
+```
+bundle exec rails secret
+
+# Save your secret key to your computer, you'll be using a couple of times in this lab
+```
+
+* Set the environment variable SECRET_KEY_BASE with your secret key as its value:
+```
+export SECRET_KEY_BASE=[SECRET_KEY]
+```
+*   Test the Rails app with the Web Preview:
+```
+RAILS_ENV=production bundle exec rails assets:precompile
+RAILS_ENV=production bundle exec rails server --port 8080
+```
+
+Once the application starts, click on the Web Preview icon in the Cloud Shell toolbar and choose Preview on port 8080.
+
+## Deployment Configuration
+
+You now have a working Cloud SQL for PostgreSQL with Rails app. Let's deploy it to the App Engine flexible environment!
+
+App Engine Flexible environment uses an app.yaml file to describe an application's deployment configuration. If this file is not present, the gcloud tool will try to guess the deployment configuration. However, it is a good idea to provide this file because Rails requires a secret key in production and App Engine requires the connectionName for the Cloud SQL instance.
+
+* Move into the directory created by Rails for the application:
+```
+cd app_name
+```
+
+Create a new file called app.yaml and add the following to the file, replacing [SECRET KEY] with the generated secret key and [YOUR_INSTANCE_CONNECTION_NAME] with the generated connectionName of the Cloud SQL for PostgreSQL instance:
+
+```
+entrypoint: bundle exec rackup --port $PORT
+env: flex
+runtime: ruby
+
+env_variables:
+  SECRET_KEY_BASE: [SECRET KEY]
+
+beta_settings:
+  cloud_sql_instances: [YOUR_INSTANCE_CONNECTION_NAME]
+```
+
+When the app is deployed, the environment variable SECRET_KEY_BASE in production will be set with the secret key and App Engine will set up the Cloud SQL Proxy to communicate with the Cloud SQL for PostgreSQL instance.
+
+## Deploying the Application on App Engine
+
+
+*   create an App Engine instance
+prompt displays with a list of regions to select from
+```
+gcloud app create
+```
+
+*   deploy your app on App Engine
+```
+gcloud app deploy
+```
+
+## Check out your Rails app
+
+* After the application deploys, you can visit it by opening the URL
+https://[PROJECT_ID].appspot.com
 
