@@ -202,5 +202,118 @@ gcloud deployment-manager deployments create [deployment_name] --template create
 gcloud deployment-manager deployments list
 ```
 
+---
+
+# Using Ruby on Rails with Cloud SQL for PostgreSQL
+
+Google Cloud SQL for PostgreSQL is a fully-managed database service that makes it easy to set up, maintain, manage, and administer your PostgreSQL relational databases on Google Cloud Platform.
+
+Google App Engine Flexible environment applications are easy to create, maintain, and scale as your traffic and data storage changes. With App Engine, there are no servers to maintain. You simply upload your application and it's ready to go.
+
+App Engine applications automatically scale based on incoming traffic. Load balancing, microservices, authorization, SQL and NoSQL databases, traffic splitting, logging, search, versioning, roll out and roll backs, and security scanning are all supported natively and are highly customizable.
+
+Google Cloud Shell is a virtual machine that is loaded with development tools. It offers a persistent 5GB home directory and runs on the Google Cloud
+
+## Create a PostgreSQL Cloud SQL instance
+
+* create a PostgreSQL instance named postgres-instance
+```
+gcloud sql instances create postgres-instance \
+    --database-version POSTGRES_9_6 \
+    --tier db-g1-small
+```
+
+* Set the password for the postgres user
+```
+gcloud sql users set-password postgres --host=% \
+    --instance postgres-instance \
+    --password [PASSWORD]
+```
+
+## Set up the Cloud SQL Proxy
+When deployed, your application uses the Cloud SQL Proxy built into the App Engine environment to communicate with your Cloud SQL instance. However, to test your application using the Cloud Shell, you must install a copy of the Cloud SQL Proxy in the development environment.
+
+*   Download the Cloud SQL Proxy:
+```
+wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64
+```
+
+*   Rename the proxy to use the standard filename:
+```
+mv cloud_sql_proxy.linux.amd64 cloud_sql_proxy
+```
+
+*   Make the proxy executable:
+```
+chmod +x cloud_sql_proxy
+```
+*   Create a directory where the proxy sockets will live:
+```
+sudo mkdir /cloudsql
+sudo chmod 0777 /cloudsql
+```
+
+> The proxy is now ready to be used. Next, you will obtain the instance connection name for the Cloud SQL for PostgreSQL instance and use it to connect the cloud_sql_proxy to the instance you created in the previous step. The instance connection name is connectionName.
+
+*   Retrieve the instance connection name by running:
+```
+# Copy the connectionName output
+gcloud sql instances describe postgres-instance | grep connectionName
+```
+
+*   Run the following to start the Cloud SQL Proxy, and replace [YOUR_INSTANCE_CONNECTION_NAME] with the connectionName value
+```
+./cloud_sql_proxy -dir=/cloudsql \
+                  -instances="[YOUR_INSTANCE_CONNECTION_NAME]"
+```
+
+## Ruby on Rails
+
+* install 
+```
+gem install rails
+rails --version
+```
+
+* Create a Ruby on Rails app
+```
+rails new app_name
+
+cd app_name
+```
+
+*   Test the Generated Rails Application
+Now that we have a Rails app, let's test it using the Web Preview function provided by the Cloud Shell environment. By default the Web Preview uses port 8080
+```
+# Start the Rails app server listening on port 8080
+
+bundle exec rails server --port 8080
+
+# click on the Web Preview icon in the Cloud Shell toolbar and choose Preview on port 8080
+```
+
+## Set up Rails app with Cloud SQL for PostgreSQL
+
+* add the pg gem to the file Gemfile to begin using Google Cloud SQL for PostgreSQL.
+```
+# Add pg gem in Gemfile
+bundle add pg
+
+# update installed dependencies
+bundle install
+```
+
+* Configure your Rails app to communicate with Cloud SQL for PostgreSQL. Open the file config/database.yml
+* Modify the database.yml production database configuration by adding the following and replacing [PASSWORD] and [YOUR_INSTANCE_CONNECTION_NAME] with their associated values:
+```
+production:
+  adapter: postgresql
+  pool: 5
+  timeout: 5000
+  username: postgres
+  password: [PASSWORD]
+  database: postgres-database
+  host: /cloudsql/[YOUR_INSTANCE_CONNECTION_NAME]
+```
 
 
