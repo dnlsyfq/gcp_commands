@@ -49,3 +49,18 @@ CREATE TABLE london2 (end_station_name VARCHAR(255), num INT);
 
 ## Cloud SQL for MySQL: Qwik Start
 
+* Cloud SQL instance
+1.  Navigation menu > SQL
+2.  Create Instance.
+3.  Click MySQL, then Next.
+4.  Click Choose Second Generation.
+5.  Enter myinstance for Instance ID.
+```
+gcloud sql connect myinstance --user=root
+CREATE DATABASE guestbook;
+USE guestbook;
+CREATE TABLE entries (guestName VARCHAR(255), content VARCHAR(255),
+    entryID INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(entryID));
+    INSERT INTO entries (guestName, content) values ("first guest", "I got here!");
+INSERT INTO entries (guestName, content) values ("second guest", "Me too!");
+```
