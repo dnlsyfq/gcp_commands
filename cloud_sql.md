@@ -173,3 +173,34 @@ select count(dest) from flights where arr_delay < @ARR_DELAY_THRESH and dep_dela
 # True positive
 select count(dest) from flights where arr_delay >= @ARR_DELAY_THRESH and dep_delay >= @DEP_DELAY_THRESH;
 ```
+---
+
+## Create a Cloud SQL Instance Using Deployment Manager
+
+
+Deployment Manager is an infrastructure deployment service that automates the creation and management of your Google Cloud Platform resources for you. You can create flexible templates that deploy a variety of Cloud Platform services, such as Google Cloud Storage, Google Compute Engine, and Google Cloud SQL.
+
+Cloud SQL is a fully-managed database service that makes it easy to set up, maintain, manage, and administer your relational PostgreSQL and MySQL databases in the cloud. Cloud SQL offers high performance, scalability, and convenience. Hosted on Google Cloud Platform, Cloud SQL provides a database infrastructure for applications running anywhere.
+
+*   Clone the DM template
+fetch the deployment manager template that will deploy SQL instance
+```
+gsutil cp -r gs://spls/gsp148/create-sql-instance.jinja .
+```
+
+*   Modify the DM template
+edit the create-sql-instance.jinja file
+
+*   Deploy your configuration
+> Create the initial deployment by running the following in Cloud Shell, adding a name for the deployment by replacing [deployment_name]:
+```
+gcloud deployment-manager deployments create [deployment_name] --template create-sql-instance.jinja
+```
+
+* list the deployments:
+```
+gcloud deployment-manager deployments list
+```
+
+
+
