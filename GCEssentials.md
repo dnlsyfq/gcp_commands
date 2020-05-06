@@ -353,3 +353,112 @@ gcloud compute forwarding-rules create http-content-rule \
 ```
 gcloud compute forwarding-rules list
 ```
+---
+# APIs Explorer: Cloud SQL
+
+The Google APIs Explorer is a tool that helps you explore various Google APIs interactively. With the APIs Explorer, you can:
+
+Browse quickly through available APIs and versions.
+See methods available for each API and what parameters they support along with inline documentation.
+Execute requests for any method and see responses in real time.
+Make authenticated and authorized API calls.
+Search across all services, methods, and your recent requests to quickly find what you are looking for.
+
+Cloud SQL is a fully-managed database service that makes it easy to set up, maintain, manage, and administer your relational PostgreSQL and MySQL databases in the cloud. Cloud SQL offers high performance, scalability, and convenience. Hosted on Google Cloud Platform, Cloud SQL provides a database infrastructure for applications running anywhere.
+
+## Build a Cloud SQL instance with instances.insert
+
+1. select APIs & Services > Library
+2. find Cloud SQL Admin API  , Make sure that API is enabled, if not click Enable
+3. open https://cloud.google.com/sql/docs/mysql/admin-api/rest/
+4. From the left APIs & Reference section navigate to API and reference > Cloud SQL v1beta4 API > Instances > insert, to select sql.instances.insert method to create an SQL instance resource.
+5. fill out a form to use the sql.instances.insert method. The Request body contains the resource properties that you want to use for creating your MySql instance:
+```
+project: = your Qwiklabs GCP Project ID
+"name": "my-instance"
+settings:tier: db-n1-standard-1
+```
+6. Make sure that Google OAuth 2.0 and API Key checkbox is selected under Credentials section
+7. click the Execute button.
+
+## View your Cloud SQL instance
+1. From the left menu, select SQL,
+2. instance has been created
+
+## Create a database with databases.insert
+1. API and reference > Cloud SQL v1beta4 API > Databases > insert to select sql.databases.insert method 
+```
+instance: my-instance
+name: mysql-db
+project: your Qwiklabs GCP Project ID.
+```
+## View your new database
+
+1. From the Navigation menu select SQL, which is located under the Storage header. This will bring you to the instances page. Click on my-instance. Then select the databases tab.
+
+## Create a table in your MySQL database and upload a CSV file to a Cloud Storage Bucket
+
+* connect to your MySQL instance
+```
+gcloud sql connect my-instance --user=root
+```
+
+* to create a new Cloud Storage bucket,
+```
+gsutil mb gs://<YOUR_BUCKET_NAME>
+```
+
+*  to upload the CSV file to your Cloud Storage bucket
+```
+gsutil cp employee_info.csv gs://<YOUR_BUCKET_NAME>/
+```
+
+* To upload this file to your MySQL database, update specific permissions with your Cloud SQL service account
+
+1. select SQL and then click on my-instance.
+From the overview page, scroll down and find the "Service account" card and copy the service account name
+
+2. open the navigation menu and select Storage > Browser.
+Click on the three-dotted menu on the far right side of the bucket and click Edit bucket permissions.
+For the member field, Click + Add member.
+Now paste the Cloud SQL service account name you copied earlier in the New members.
+Click the roles drop down and select Storage > Storage Admin.
+
+## Add a CSV file to your database using instances.import
+1. From the left APIs & Reference section navigate to API and reference > Cloud SQL v1beta4 API > Instances > import to select sql.instances.import method
+```
+project: = your Qwiklabs GCP Project ID
+
+instance: = my-instance
+
+Request body = Click inside the brackets to select the following properties:
+
+importContext:
+database: mysql-db
+uri: gs://<YOUR_BUCKET_NAME>/employee_info.csv, replacing <YOUR_BUCKET_NAME> with the name of your bucket
+fileType: csv
+csvImportOptions:
+table: info
+```
+
+## Inspect your updated database
+
+Return to the GCP Console and return to your MySQL Cloud Shell tab that you left open. You will now see if the info table picked up the CSV file data
+
+## Delete your database
+1. From the left APIs & Reference section navigate to API and reference > Cloud SQL v1beta4 API > Databases > delete to select sql.databases.delete method
+2. fill out a form to use the sql.databases.delete method
+```
+project: = your Qwiklabs GCP Project ID
+
+instance: = my-instance
+
+database: = mysql-db
+```
+
+## View your updated Cloud SQL instance
+From the GCP Console, from the Navigation menu select SQL, which is located under the Storage header. This will bring you to the instances page.
+
+Click on my-instance, then click on the databases tab
+
+
