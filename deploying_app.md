@@ -90,3 +90,30 @@ gcloud app deploy
 ```
 gcloud config list project
 ```
+---
+
+# Firebase Web
+
+```
+git clone https://github.com/firebase/friendlychat-web
+
+#friendlychat-web repository contains sample projects for multiple platforms. This lab uses only two repositories:
+
+#web-start: The starting code that you'll build upon in this lab.
+#web: The complete code for the finished sample app.
+```
+
+## Set up your Firebase project
+* Firebase Authentication to easily let your users sign-in your app.
+
+* Cloud Firestore to save structured data on the cloud and get instant notification when data changes.
+
+* Cloud Storage for Firebase to save files in the cloud.
+
+* Firebase Hosting to host and serve your assets.
+
+* Firebase Cloud Messaging to send push notifications and display browser popup notifications.
+
+## Enable Firebase on your project
+
+
