@@ -57,4 +57,74 @@ Click SAVE.
 gsutil ls gs://[YOUR_BUCKET_NAME]
 ```
 
+---
 
+# Cloud Monitoring: Qwik Start
+
+Cloud Monitoring provides visibility into the performance, uptime, and overall health of cloud-powered applications. Cloud monitoring collects metrics, events, and metadata from Google Cloud, Amazon Web Services, hosted uptime probes, application instrumentation, and a variety of common application components including Cassandra, Nginx, Apache Web Server, Elasticsearch, and many others. Cloud monitoring ingests that data and generates insights via dashboards, charts, and alerts. Cloud monitoring alerting helps you collaborate by integrating with Slack, PagerDuty, HipChat, Campfire, and more.
+
+This hands-on lab shows you how to monitor a Google Compute Engine virtual machine (VM) instance with Cloud monitoring. You'll also install monitoring and logging agents for your VM which collects more information from your instance, which could include metrics and logs from 3rd party apps.
+
+## Create a Compute Engine instance
+1. Navigation menu > Compute Engine > VM instances, then click Create.
+```
+Name: lamp-1-vm
+
+Region: us-central1 (Iowa) or asia-south1 (Mumbai)
+
+Zone: us-central1-a or asia south1-a
+
+Machine type: n1-standard-2
+
+Firewall: Select Allow HTTP traffic
+```
+## Add Apache2 HTTP Server to your instance
+1.  In the Console, click SSH to open a terminal to your instance.
+```
+Run the following commands in the SSH window
+sudo apt-get update
+sudo apt-get install apache2 php7.0
+sudo service apache2 restart
+```
+2. Click the External IP for lamp-1-vm instance to see the Apache2 default page for this instance.
+
+## Create a Monitoring workspace
+setup a Monitoring workspace that's tied to your Qwiklabs GCP Project. The following steps create a new account that has a free trial of Monitoring.
+
+1. Navigation menu > Monitoring.
+```
+Install the Monitoring and Logging agents
+Agents collect data and then send or stream info to Cloud Monitoring in the Console.
+
+The Cloud Monitoring agent is a collectd-based daemon that gathers system and application metrics from virtual machine instances and sends them to Monitoring. By default, the Monitoring agent collects disk, CPU, network, and process metrics. Configuring the Monitoring agent allows third-party applications to get the full list of agent metrics. Learn more.
+
+The Cloud Logging agent streams logs from your VM instances and from selected third-party software packages to Cloud Logging. It is a best practice to run the Cloud Logging agent on all your VM instances
+```
+* install the agents on the VM
+2. In the Monitoring Overview window, click INSTALL AGENTS 
+3. Run the Monitoring agent install script command in the SSH terminal of your VM instance to install the Cloud Monitoring agent
+4. Run the Logging agent install script command in the SSH terminal of your VM instance to install the Cloud Logging agent
+
+## Create an uptime check
+Uptime checks verify that a resource is always accessible. For practice, create an uptime check to verify your VM is up.
+1. in the left menu, click Uptime checks, and then click Create Uptime Check.
+```
+Title: Lamp Uptime Check
+
+Check type: HTTP
+
+Resource Type: Instance
+
+Applies to: Single, lamp-1-vm
+
+Path: leave at default
+
+Check every: 1 min
+```
+2.  Click Test to verify that your uptime check can connect to the resource.
+
+3.  When you see a green check mark everything can connect. Click Save.
+
+4.  Click No, thanks to create an alerting policy for this check.
+
+## Create an alerting policy
