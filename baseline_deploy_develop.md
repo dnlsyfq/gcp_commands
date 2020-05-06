@@ -272,4 +272,47 @@ SELECT * FROM Task
 
 ```
 
+---
+
+# Data Loss Prevention: Qwik Start - Command Line
+
+## Download the DLP API
+```
+git clone https://github.com/googleapis/nodejs-dlp.git
+export GCLOUD_PROJECT=[YOUR_PROJECT_ID]
+
+```
+
+## Install dependencies
+```
+npm install --save @google-cloud/dlp
+npm install yargs
+```
+
+## Inspect a string for sensitive information
+```
+cd nodejs-dlp/samples
+node inspect.js string "My email address is joe@example.com."
+```
+---
+
+# Cloud Security Scanner: Qwik Start
+
+The Cloud Security Scanner identifies security vulnerabilities in your Google App Engine web applications. It crawls your application, following all links within the scope of your starting URLs, and attempts to exercise as many user inputs and event handlers as possible.
+
+The scanner is designed to complement your existing secure design and development processes. To avoid distracting developers with false positives, the scanner errs on the side of under reporting and will not display low confidence alerts. It does not replace a manual security review, and it does not guarantee that your application is free from security flaws. For more information on web security, see the OWASP Top Ten Project.
+
+```
+git clone https://github.com/GoogleCloudPlatform/python-docs-samples
+cd python-docs-samples/appengine/standard_python37/hello_world
+dev_appserver.py app.yaml
+gcloud app deploy
+gcloud app browse
+```
+1.  Navigation menu > App Engine > Security scans:
+2. Enable API > Create scan
+3. Under Starting URLs, enter the URL of the application you want to scan
+4. Click Save to create the scan.
+5. Click Run to start scanning:
+
 
