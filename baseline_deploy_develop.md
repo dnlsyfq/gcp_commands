@@ -225,3 +225,51 @@ In the above example, cos-stable-72-11316-136-0 is one of the available cos rele
  
 In a browser, enter your external IP address to verify that nginx is running
 
+---
+
+# Datastore: Qwik Start
+how to store and query data in Google Cloud Datastore using the Google Cloud Platform
+
+##  Store data
+1. In left menu on the Console, Storage section, go to Datastore > Entities.
+2. Under the Datastore mode column, click Select Datastore Mode.
+3. Now choose where you'll create your database. Use the dropdown menu to select a location:
+4. The location applies to both Cloud Datastore and App Engine for your Google Cloud Platform project. You cannot change the location after it has been saved.
+```
+Click Create database.
+
+Click Create Entity.
+
+On the Create an entity page, use [default] for Namespace.
+
+Type Task for Kind.
+```
+## Run a query
+Cloud Datastore supports querying data by kind or by Google Query Language (GQL); the instructions below walk you through the steps of doing both.
+
+* Run kind queries
+```
+Click Query by kind.
+Select Task as the kind.
+The query results show the Task entity that you created.
+
+Next, add a query filter to restrict the results to entities that meet specific criteria:
+
+Click Filter entities tab.
+
+In the dropdown lists, select done, is a boolean, and that is false.
+Click Apply filters. The results show the Task entity that you created, since its done value is false.
+Now try a query of done, is a boolean, and that is true then Apply filters. The results do not include the Task entity that you created, because its done value is not true.
+```
+## Run GQL queries
+
+```
+Click the Query by GQL tab.
+
+In the query box add the following:
+
+SELECT * FROM Task
+
+```
+
+
