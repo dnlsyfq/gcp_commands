@@ -109,3 +109,10 @@ kubectl edit deployment hello
 kubectl get replicaset
 ```
 
+```
+gcloud container clusters list
+
+gcloud container clusters get-credentials jenkins-cd
+
+kubectl cluster-info
+```
