@@ -54,6 +54,11 @@ When you run the kubectl create command to create the auth deployment, it will m
 kubectl create -f deployments/auth.yaml
 ```
 
+* get nodes
+```
+kubectl get nodes
+```
+
 3. verify that it was created
 ```
 kubectl get deployments
