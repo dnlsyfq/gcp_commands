@@ -26,3 +26,8 @@ cd ~/training-data-analyst/courses/developingapps/java/devenv/
 mvn clean install
 mvn spring-boot:run
 ```
+```
+To run a simple Java application that lists Compute Engine instances, execute the following command:
+
+mvn exec:java@list-gce
+```
