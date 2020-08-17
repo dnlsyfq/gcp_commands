@@ -20,3 +20,19 @@ gcloud config set compute/zone us-central1-f
 ```
 gcloud source repos list
 ```
+
+--- 
+
+Base:
+```
+for i in {1..10}; do
+  echo Hello, World!
+done 
+```
+
+Powershell:
+```
+for($i=1; $i -le 10; $i++){
+  Write-Host "Hello, World!"
+}
+```
