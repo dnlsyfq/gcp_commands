@@ -73,3 +73,19 @@ substring in string
 |{:<6s}|	string aligned to the left that many spaces|	'{:<6s}'.format('Py') → 'Py    '|
 |{:>6s}|	string aligned to the right that many spaces|	'{:>6s}'.format('Py') → '    Py'|
 |{:^6s}	|string centered in that many spaces |	'{:^6s}'.format('Py') → '  Py '|
+
+
+# Python List
+
+```
+list_var.insert(index,'val')
+list_var.remove('val') # first occurance
+list_var.pop(index)
+
+```
+
+# Python Tuples 
+
+```
+tuple_var = ('','','')
+```
